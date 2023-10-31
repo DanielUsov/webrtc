@@ -1,0 +1,16 @@
+#localvideo,
+#remotevideo {
+  width: 500px;
+  height: 500px;
+  background-color: aquamarine;
+}
+
+#startbutton {
+  width: 500px;
+  padding: 5px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
