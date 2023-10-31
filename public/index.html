@@ -7,13 +7,16 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <script src="/socket.io/socket.io.js"></script>
     <div class="container">
       <video id="localvideo" autoplay></video>
       <video id="remotevideo" autoplay></video>
-      <button type="button" id="startbutton" onclick="start()">Start video</button>
+      <button type="button" id="startbutton" onclick="start()">
+        Start video
+      </button>
       <button type="button" id="call" onclick="call()">Call</button>
       <button type="button" id="stopbutton" onclick="stop()">Stop video</button>
     </div>
-    <script src="../client.js"></script>
+    <script src="client.js"></script>
   </body>
 </html>

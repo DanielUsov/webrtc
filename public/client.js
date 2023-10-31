@@ -59,11 +59,13 @@ function gotRemoteStream(e) {
 async function onCreateAnswerSuccess(answer) {
   try {
     await pc1.setRemoteDescription(answer);
+    sendMessage(answer);
   } catch (error) {
     console.log(error);
   }
   try {
     await pc2.setLocalDescription(answer);
+    sendMessage(answer);
   } catch (error) {
     console.log(error);
   }
@@ -72,6 +74,14 @@ async function onCreateAnswerSuccess(answer) {
 async function onIceCandidate(pc, e) {
   try {
     await getOtherPc(pc).addIceCandidate(e.candidate);
+    if (e.candidate) {
+      sendMessage({
+        type: 'candidate',
+        label: e.candidate.sdpMLineIndex,
+        id: e.candidate.sdpMid,
+        candidate: e.candidate.candidate,
+      });
+    }
   } catch (error) {
     console.log(error);
   }
@@ -87,3 +97,24 @@ function stop() {
   pc1 = null;
   pc2 = null;
 }
+
+var socket = io.connect('', { port: 5000 });
+
+function sendMessage(message) {
+  socket.emit('message', message);
+}
+
+socket.on('message', function (message) {
+  if (message.type === 'offer') {
+    pc.setRemoteDescription(new RTCSessionDescription(message));
+    createAnswer();
+  } else if (message.type === 'answer') {
+    pc.setRemoteDescription(new RTCSessionDescription(message));
+  } else if (message.type === 'candidate') {
+    var candidate = new RTCIceCandidate({
+      sdpMLineIndex: message.label,
+      candidate: message.candidate,
+    });
+    pc.addIceCandidate(candidate);
+  }
+});
